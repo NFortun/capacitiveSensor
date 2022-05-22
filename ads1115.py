@@ -17,7 +17,7 @@ class MoistureSensor:
         self.name = name
         self.chan = chan
     def ComputeMoist(self):
-        moist = 100 - ((self.chan.value) / self.DRY )*100
+        moist = round(100 - ((self.chan.value / self.DRY )*100), 1)
         return moist
     def Name(self):
         return self.name
@@ -34,9 +34,11 @@ if __name__ == '__main__':
     voltageGauge = Gauge("Voltage", "Voltage of sensor", ["name"])
     while True:
         moist = sensor.ComputeMoist()
+        rawValue = sensor.RawValue()
+        rawVoltage = sensor.RawVoltage()
         g.labels(sensor.Name()).set(moist)
-        rawGauge.labels(sensor.Name()).set(sensor.RawValue())
-        print(sensor.RawValue(), moist)
+        rawGauge.labels(sensor.Name()).set(rawValue)
+        voltageGauge.labels(sensor.Name()).set(rawVoltage)
+        print(rawValue, moist)
         sys.stdout.flush()
-        voltageGauge.labels(sensor.Name()).set(sensor.RawVoltage())
         time.sleep(3600)
